@@ -1,0 +1,9 @@
+<h1>Clients#index</h1>
+<div id="clients">
+  <% @clients.each do |client| %>
+    <div>
+      <%= link_to client.name, client %>
+      <%= client.age %>
+    </div>
+  <% end %>
+</div>
