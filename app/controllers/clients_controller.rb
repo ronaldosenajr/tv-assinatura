@@ -1,4 +1,5 @@
 class ClientsController < ApplicationController
+  allow_unauthenticated_access only: %i[ index show ]
   before_action :set_client, only: [ :show, :edit, :update, :destroy ]
 
   def index
