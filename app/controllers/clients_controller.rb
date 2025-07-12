@@ -1,5 +1,6 @@
 class ClientsController < ApplicationController
-  allow_unauthenticated_access only: %i[ index show ]
+  # permite acesso nao autenticado mas somente para testes, tem que ser criado um sistema de autenticação
+  allow_unauthenticated_access only: %i[ index show new create update edit destroy ]
   before_action :set_client, only: [ :show, :edit, :update, :destroy ]
 
   def index

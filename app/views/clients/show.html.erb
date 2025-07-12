@@ -2,7 +2,7 @@
 <p>Age: <%= @client.age %></p>
 
 <%= link_to "Back", clients_path %>
-<% if authenticated? %>
-    <%= link_to "Edit", edit_client_path(@client) %>
-    <%= button_to "Delete", @client, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
-<% end %>
+<%# <% if authenticated? %>
+<%= link_to "Edit", edit_client_path(@client) %>
+<%= button_to "Delete", @client, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+<%# <% end %>
