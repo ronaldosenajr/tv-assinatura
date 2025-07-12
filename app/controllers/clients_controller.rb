@@ -1,10 +1,11 @@
 class ClientsController < ApplicationController
+  before_action :set_client, only: [ :show, :edit, :update ]
+
   def index
     @clients = Client.all
   end
 
   def show
-    @client = Client.find(params[:id])
   end
 
   def new
@@ -15,7 +16,21 @@ class ClientsController < ApplicationController
     @client = Client.new(client_params)
     if @client.save
       # Se você quiser retornar um JSON, descomente a linha abaixo
-      #render json: @client, status: :created
+      # render json: @client, status: :created
+      # Pode redirecionar para a página de exibição do cliente
+      redirect_to @client
+    else
+      render json: @client.errors.full_messages, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    if @client.update(client_params)
+      # Se você quiser retornar um JSON, descomente a linha abaixo
+      # render json: @client, status: :created
       # Pode redirecionar para a página de exibição do cliente
       redirect_to @client
     else
@@ -25,7 +40,11 @@ class ClientsController < ApplicationController
 
 private
 
+  def set_client
+    @client = Client.find(params[:id])
+  end
+
   def client_params
-    params.expect(client: [:name, :age])
+    params.expect(client: [ :name, :age ])
   end
 end

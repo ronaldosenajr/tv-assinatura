@@ -5,6 +5,5 @@ Rails.application.routes.draw do
 
   root "clients#index"
 
-  resources :clients, only: [:index, :show, :new, :create, :update, :destroy]
-
+  resources :clients
 end

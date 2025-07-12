@@ -1,17 +1,4 @@
 <h1>New Client</h1>
 
-<%= form_with model: @client do |form| %>
-  <div>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div>
-    <%= form.label :age %>
-    <%= form.number_field :age %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+<%= render "form", client: @client %>
+<%= link_to "Cancel", clients_path %>
