@@ -1,5 +1,5 @@
 class ClientsController < ApplicationController
-  before_action :set_client, only: [ :show, :edit, :update ]
+  before_action :set_client, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @clients = Client.all
@@ -36,6 +36,14 @@ class ClientsController < ApplicationController
     else
       render json: @client.errors.full_messages, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @client.destroy
+    # Se você quiser retornar um JSON, descomente a linha abaixo
+    # render json: @client, status: :created
+    # Pode redirecionar para a página de exibição do cliente
+    redirect_to clients_path
   end
 
 private
