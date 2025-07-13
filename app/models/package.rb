@@ -20,6 +20,8 @@ class Package < ApplicationRecord
 
     def set_value
       return if value.present?
+      return unless plan.present?  # só calcula se plan existir
+      return if additional_services.blank?  # não calcula se não houver serviços adicionais
       total = plan.value.to_f + additional_services.sum(&:value)
       self.value = total
     end
