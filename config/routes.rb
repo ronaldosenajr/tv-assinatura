@@ -12,4 +12,6 @@ Rails.application.routes.draw do
   resources :plans, only: [ :index, :show, :create, :update, :destroy ]
 
   resources :additional_services, only: [ :index, :show, :create, :update, :destroy ]
+
+  resources :packages, only: [ :index, :show, :create, :update, :destroy ]
 end
