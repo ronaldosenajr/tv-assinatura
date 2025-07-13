@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_001925) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_13_010921) do
   create_table "additional_services", force: :cascade do |t|
     t.string "name"
     t.decimal "value"
@@ -59,6 +59,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_001925) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "subscription_additional_services", force: :cascade do |t|
+    t.integer "subscription_id", null: false
+    t.integer "additional_service_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["additional_service_id"], name: "idx_on_additional_service_id_305e585373"
+    t.index ["subscription_id"], name: "index_subscription_additional_services_on_subscription_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer "client_id", null: false
+    t.integer "plan_id", null: false
+    t.integer "package_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_subscriptions_on_client_id"
+    t.index ["package_id"], name: "index_subscriptions_on_package_id"
+    t.index ["plan_id"], name: "index_subscriptions_on_plan_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
     t.string "password_digest", null: false
@@ -71,4 +91,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_001925) do
   add_foreign_key "package_additional_services", "packages"
   add_foreign_key "packages", "plans"
   add_foreign_key "sessions", "users"
+  add_foreign_key "subscription_additional_services", "additional_services"
+  add_foreign_key "subscription_additional_services", "subscriptions"
+  add_foreign_key "subscriptions", "clients"
+  add_foreign_key "subscriptions", "packages"
+  add_foreign_key "subscriptions", "plans"
 end
