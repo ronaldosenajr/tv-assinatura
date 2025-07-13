@@ -10,4 +10,6 @@ Rails.application.routes.draw do
   resources :clients
 
   resources :plans, only: [ :index, :show, :create, :update, :destroy ]
+
+  resources :additional_services, only: [ :index, :show, :create, :update, :destroy ]
 end
