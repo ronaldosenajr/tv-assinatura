@@ -31,7 +31,7 @@ class PackagesController < ApplicationController
 
   def destroy
     @package.destroy
-    head :no_content
+    render json: @package, status: :ok
   end
 
   private
