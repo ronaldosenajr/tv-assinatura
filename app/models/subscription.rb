@@ -7,6 +7,7 @@ class Subscription < ApplicationRecord
   has_many :additional_services, through: :subscription_additional_services
 
   validate :plan_xor_package_present
+  validate :no_duplicate_additional_services
 
   private
   def plan_xor_package_present
@@ -16,4 +17,10 @@ class Subscription < ApplicationRecord
       errors.add(:base, "Assinatura precisa ter plano ou pacote")
     end
   end
+
+   def no_duplicate_additional_services
+     if additional_services.length > additional_services.uniq.length
+       errors.add(:base, "Assinatura não pode ter serviços adicionais duplicados")
+     end
+   end
 end
