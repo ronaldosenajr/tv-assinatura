@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_000929) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_13_001925) do
   create_table "additional_services", force: :cascade do |t|
     t.string "name"
     t.decimal "value"
@@ -23,6 +23,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_000929) do
     t.integer "age"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "package_additional_services", force: :cascade do |t|
+    t.integer "package_id", null: false
+    t.string "additional_services"
+    t.string "references"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["package_id"], name: "index_package_additional_services_on_package_id"
+  end
+
+  create_table "packages", force: :cascade do |t|
+    t.string "name"
+    t.decimal "value"
+    t.integer "plan_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plan_id"], name: "index_packages_on_plan_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -49,5 +67,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_000929) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "package_additional_services", "packages"
+  add_foreign_key "packages", "plans"
   add_foreign_key "sessions", "users"
 end
