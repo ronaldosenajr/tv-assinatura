@@ -8,6 +8,7 @@ class Subscription < ApplicationRecord
 
   validate :plan_xor_package_present
   validate :no_duplicate_additional_services
+  validate :no_service_conflict_with_package
 
   private
   def plan_xor_package_present
@@ -23,4 +24,14 @@ class Subscription < ApplicationRecord
        errors.add(:base, "Assinatura não pode ter serviços adicionais duplicados")
      end
    end
+
+    def no_service_conflict_with_package
+      return if package.blank?
+
+      conflicting_services = additional_services & package.additional_services
+      if conflicting_services.any?
+        names = conflicting_services.map(&:name).join(", ")
+        errors.add(:base, "Assinatura não pode ter serviços adicionais que estejam no pacote: #{names}")
+      end
+    end
 end
