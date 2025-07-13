@@ -27,10 +27,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_001925) do
 
   create_table "package_additional_services", force: :cascade do |t|
     t.integer "package_id", null: false
-    t.string "additional_services"
-    t.string "references"
+    t.integer "additional_service_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["additional_service_id"], name: "index_package_additional_services_on_additional_service_id"
     t.index ["package_id"], name: "index_package_additional_services_on_package_id"
   end
 
@@ -67,6 +67,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_001925) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "package_additional_services", "additional_services"
   add_foreign_key "package_additional_services", "packages"
   add_foreign_key "packages", "plans"
   add_foreign_key "sessions", "users"
