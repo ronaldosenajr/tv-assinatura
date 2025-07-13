@@ -14,4 +14,6 @@ Rails.application.routes.draw do
   resources :additional_services, only: [ :index, :show, :create, :update, :destroy ]
 
   resources :packages, only: [ :index, :show, :create, :update, :destroy ]
+
+  resources :subscriptions, only: [ :index, :show, :create, :update, :destroy ]
 end
