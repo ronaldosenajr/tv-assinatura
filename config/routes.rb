@@ -15,5 +15,8 @@ Rails.application.routes.draw do
 
   resources :packages, only: [ :index, :show, :create, :update, :destroy ]
 
-  resources :subscriptions, only: [ :index, :show, :create, :update, :destroy ]
+  resources :subscriptions, only: [ :index, :show, :create, :update, :destroy ] do
+    # rota para faturamento, totais, etc
+    get "billing_totals", on: :member
+  end
 end

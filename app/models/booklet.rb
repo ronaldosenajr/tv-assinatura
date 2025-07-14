@@ -14,7 +14,7 @@ class Booklet < ApplicationRecord
 
   def monthly_totals_array
     monthly_totals.map do |month, total|
-      { month: month, total_value: total }
+      { end_date: month, total_value: total }
     end
   end
 end

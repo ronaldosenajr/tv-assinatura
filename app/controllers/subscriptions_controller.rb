@@ -2,7 +2,7 @@ class SubscriptionsController < ApplicationController
   skip_before_action :verify_authenticity_token
   allow_unauthenticated_access
 
-  before_action :set_subscription, only: [ :show, :update, :destroy ]
+  before_action :set_subscription, only: [ :show, :update, :destroy, :billing_totals ]
 
   def index
     render json: Subscription.includes(:client, :plan, :package, :additional_services).all
@@ -15,6 +15,7 @@ class SubscriptionsController < ApplicationController
   def create
     @subscription = Subscription.new(subscription_params)
     if @subscription.save
+      @subscription.create_booklet!
       render json: @subscription, status: :created
     else
       render json: { errors: @subscription.errors.full_messages }, status: :unprocessable_entity
@@ -32,6 +33,22 @@ class SubscriptionsController < ApplicationController
     def destroy
       @subscription.destroy
       render json: @subscription, status: :ok
+    end
+
+    def billing_totals
+      booklet = @subscription.booklet
+
+      if booklet.nil?
+        render json: { error: "Booklet not found" }, status: :not_found
+        return
+      end
+
+      totals = booklet.monthly_totals_array
+
+      render json: {
+        subscription_id: @subscription.id,
+        totals: totals
+      }
     end
 
   private
