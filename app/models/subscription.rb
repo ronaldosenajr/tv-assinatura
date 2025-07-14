@@ -5,10 +5,59 @@ class Subscription < ApplicationRecord
 
   has_many :subscription_additional_services, dependent: :destroy
   has_many :additional_services, through: :subscription_additional_services
+  has_many :bills, dependent: :destroy
+  has_many :invoices, dependent: :destroy
+  has_one :booklet, dependent: :destroy
+
+  after_create :generate_billing
 
   validate :plan_xor_package_present
   validate :no_duplicate_additional_services
   validate :no_service_conflict_with_package
+
+  def generate_billing
+    today = Time.zone.today
+    due_day = today.day
+    start_date = today.next_month.change(day: [ due_day, 28 ].min) # evita dia 31
+
+    12.times do |i|
+      due_date = start_date.advance(months: i)
+      monthly_bills = []
+
+      # Conta do plano ou pacote
+      if plan.present?
+        monthly_bills << bills.create!(
+          item: plan,
+          due_date: due_date,
+          value: plan.value
+        )
+      elsif package.present?
+        monthly_bills << bills.create!(
+          item: package,
+          due_date: due_date,
+          value: package.value
+        )
+      end
+
+      # Contas dos serviços adicionais
+      additional_services.each do |service|
+        monthly_bills << bills.create!(
+          item: service,
+          due_date: due_date,
+          value: service.value
+        )
+      end
+
+      # Fatura do mês (agrupamento das contas)
+      invoices.create!(
+        due_date: due_date,
+        total_value: monthly_bills.sum(&:value)
+      )
+    end
+
+    # Carnê
+    create_booklet!
+  end
 
   private
   def plan_xor_package_present

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_013315) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_14_175946) do
   create_table "additional_services", force: :cascade do |t|
     t.string "name"
     t.decimal "value"
@@ -18,11 +18,38 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_013315) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "bills", force: :cascade do |t|
+    t.integer "subscription_id", null: false
+    t.string "item_type"
+    t.integer "item_id"
+    t.date "due_date"
+    t.decimal "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_bills_on_subscription_id"
+  end
+
+  create_table "booklets", force: :cascade do |t|
+    t.integer "subscription_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_booklets_on_subscription_id"
+  end
+
   create_table "clients", force: :cascade do |t|
     t.string "name"
     t.integer "age"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.integer "subscription_id", null: false
+    t.date "due_date"
+    t.decimal "total_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
   end
 
   create_table "package_additional_services", force: :cascade do |t|
@@ -87,6 +114,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_013315) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "bills", "subscriptions"
+  add_foreign_key "booklets", "subscriptions"
+  add_foreign_key "invoices", "subscriptions"
   add_foreign_key "package_additional_services", "additional_services"
   add_foreign_key "package_additional_services", "packages"
   add_foreign_key "packages", "plans"
