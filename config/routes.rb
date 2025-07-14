@@ -18,5 +18,7 @@ Rails.application.routes.draw do
   resources :subscriptions, only: [ :index, :show, :create, :update, :destroy ] do
     # rota para faturamento, totais, etc
     get "billing_totals", on: :member
+    get :booklet, on: :member
+    get :booklet_pdf, on: :member
   end
 end

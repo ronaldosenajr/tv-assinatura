@@ -12,6 +12,8 @@ class Subscription < ApplicationRecord
   after_create :generate_billing
 
   validate :plan_xor_package_present
+  validate :client_cannot_have_conflicting_subscriptions, on: :create
+
   validate :no_duplicate_additional_services
   validate :no_service_conflict_with_package
 
@@ -68,19 +70,39 @@ class Subscription < ApplicationRecord
     end
   end
 
-   def no_duplicate_additional_services
-     if additional_services.length > additional_services.uniq.length
-       errors.add(:base, "Assinatura não pode ter serviços adicionais duplicados")
-     end
-   end
+  def no_duplicate_additional_services
+    if additional_services.length > additional_services.uniq.length
+      errors.add(:base, "Assinatura não pode ter serviços adicionais duplicados")
+    end
+  end
 
-    def no_service_conflict_with_package
-      return if package.blank?
+  def no_service_conflict_with_package
+    return if package.blank?
 
-      conflicting_services = additional_services & package.additional_services
-      if conflicting_services.any?
-        names = conflicting_services.map(&:name).join(", ")
-        errors.add(:base, "Assinatura não pode ter serviços adicionais que estejam no pacote: #{names}")
+    conflicting_services = additional_services & package.additional_services
+    if conflicting_services.any?
+      names = conflicting_services.map(&:name).join(", ")
+      errors.add(:base, "Assinatura não pode ter serviços adicionais que estejam no pacote: #{names}")
+    end
+  end
+
+  def client_cannot_have_conflicting_subscriptions
+    return unless client
+
+    # Se for assinatura com plano
+    if plan.present?
+      # verifica se cliente tem assinatura com pacote
+      if Subscription.where(client: client).where.not(id: id).where.not(package_id: nil).exists?
+        errors.add(:base, "Cliente já tem assinatura com pacote. Não pode assinar plano simultaneamente")
       end
     end
+
+    # Se for assinatura com pacote
+    if package.present?
+      # verifica se cliente tem assinatura com plano
+      if Subscription.where(client: client).where.not(id: id).where.not(plan_id: nil).exists?
+        errors.add(:base, "Cliente já tem assinatura com plano. Não pode assinar pacote simultaneamente")
+      end
+    end
+  end
 end
