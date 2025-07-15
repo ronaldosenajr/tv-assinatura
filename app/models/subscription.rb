@@ -3,19 +3,37 @@ class Subscription < ApplicationRecord
   belongs_to :plan, optional: true
   belongs_to :package, optional: true
 
-  has_many :subscription_additional_services, dependent: :destroy
+has_many :subscription_additional_services, dependent: :destroy, after_add: :after_additional_service_changed, after_remove: :after_additional_service_changed
   has_many :additional_services, through: :subscription_additional_services
   has_many :bills, dependent: :destroy
   has_many :invoices, dependent: :destroy
   has_one :booklet, dependent: :destroy
 
   after_create :generate_billing
+  after_update :regenerate_billing_if_needed
 
   validate :plan_xor_package_present
   validate :client_cannot_have_conflicting_subscriptions, on: :create
 
   validate :no_duplicate_additional_services
   validate :no_service_conflict_with_package
+
+  def after_additional_service_changed(_service)
+    regenerate_billing! if persisted?
+  end
+
+  def regenerate_billing_if_needed
+    if saved_change_to_plan_id? || saved_change_to_package_id?
+      regenerate_billing!
+    end
+  end
+
+  def regenerate_billing!
+    bills.destroy_all
+    invoices.destroy_all
+    booklet&.destroy
+    generate_billing
+  end
 
   def generate_billing
     today = Time.zone.today
