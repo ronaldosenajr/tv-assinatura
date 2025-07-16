@@ -42,6 +42,10 @@ rails server
 
 Acesse a aplicação em [http://localhost:3000](http://localhost:3000).
 
+## 📌 Rotas da API
+
+As rotas completas da aplicação estão documentadas no arquivo [ROUTES.md](ROUTES.md).
+
 ## 🧪 Rodando os testes
 
 ### Banco de dados dos testes
