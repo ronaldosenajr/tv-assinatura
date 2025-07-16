@@ -86,8 +86,6 @@ Este projeto está sob a licença MIT.
 
 ## 👤 Autor
 
-```text
-Ronaldo Sena Jr.
+[Ronaldo Sena Jr.](https://www.linkedin.com/in/ronaldo-sena-junior/)
 Desenvolvedor Full Stack | Estudante de Jogos Digitais
-ronaldosenajr@gmail.com
-```
+[ronaldosenajr@gmail.com](mailto:ronaldosenajr@gmail.com)
