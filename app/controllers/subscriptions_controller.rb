@@ -2,7 +2,7 @@ class SubscriptionsController < ApplicationController
   skip_before_action :verify_authenticity_token
   allow_unauthenticated_access
 
-  before_action :set_subscription, only: [ :show, :update, :destroy, :billing_totals, :booklet, :booklet_pdf ]
+  before_action :set_subscription, only: [ :show, :update, :destroy, :billing_totals, :booklet, :booklet_pdf, :cancel_subscription ]
 
   def index
     render json: Subscription.includes(:client, :plan, :package, :additional_services).all
@@ -94,6 +94,11 @@ class SubscriptionsController < ApplicationController
               filename: "carne_cliente_#{@subscription.client_id}.pdf",
               type: "application/pdf",
               disposition: "inline"
+  end
+
+  def cancel_subscription
+    @subscription.cancel_subscription
+    render json: @subscription.booklet, status: :ok
   end
 
   private

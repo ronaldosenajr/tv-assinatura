@@ -79,6 +79,16 @@ has_many :subscription_additional_services, dependent: :destroy, after_add: :aft
     create_booklet!
   end
 
+  def cancel_subscription
+    date = Time.zone.today
+    bills.where("due_date >= ?", date).find_each do |bill|
+      bill.update!(value: 0)
+    end
+    invoices.where("due_date >= ?", date).find_each do |invoice|
+      invoice.update!(total_value: 0)
+    end
+  end
+
   private
   def plan_xor_package_present
     if plan_id.present? && package_id.present?

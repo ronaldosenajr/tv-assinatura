@@ -20,5 +20,6 @@ Rails.application.routes.draw do
     get "billing_totals", on: :member
     get :booklet, on: :member
     get :booklet_pdf, on: :member
+    post :cancel_subscription, on: :member
   end
 end
